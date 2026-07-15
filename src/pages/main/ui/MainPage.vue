@@ -189,6 +189,15 @@ function openCe() {
         >tinybench
         </a>
       </span>
+      <a
+        class="flex items-center gap-1 c-text-primary hover:underline"
+        href="https://github.com/Solant/benchpress"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <span class="i-mdi-github" />
+        Source code
+      </a>
     </div>
   </div>
 </template>
