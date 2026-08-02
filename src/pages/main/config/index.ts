@@ -125,4 +125,58 @@ const obj = {
       },
     ],
   },
+  'JSON.parse vs Protobuf': {
+    setup: `\
+import protobuf from "https://esm.sh/protobufjs@7.4.0";
+
+const proto = \`
+syntax = "proto3";
+enum Status { UNKNOWN = 0; ACTIVE = 1; INACTIVE = 2; }
+message Meta { string ip = 1; string region = 2; }
+message Sample {
+  int32 id = 1;
+  string name = 2;
+  bool active = 3;
+  double score = 4;
+  bytes payload = 5;
+  Status status = 6;
+  repeated string tags = 7;
+  Meta meta = 8;
+  int64 timestamp = 9;
+  sint32 priority = 10;
+}
+\`;
+
+const Sample = protobuf.parse(proto).root.lookupType('Sample');
+
+const obj = {
+  id: 42,
+  name: 'benchpress',
+  active: true,
+  score: 3.14159,
+  payload: new Uint8Array([1, 2, 3, 4, 5]),
+  status: 1,
+  tags: ['a', 'b', 'c'],
+  meta: { ip: '127.0.0.1', region: 'eu' },
+  timestamp: 1700000000123,
+  priority: -7,
+};
+
+const json = JSON.stringify(obj);
+const bytes = Sample.encode(Sample.create(obj)).finish();`,
+    tasks: [
+      {
+        title: 'JSON.parse',
+        code: 'JSON.parse(json)',
+      },
+      {
+        title: 'protobuf decode',
+        code: 'Sample.decode(bytes)',
+      },
+      {
+        title: 'protobuf decode + toObject',
+        code: 'Sample.toObject(Sample.decode(bytes))',
+      },
+    ],
+  },
 };
